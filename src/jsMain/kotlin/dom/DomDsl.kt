@@ -64,7 +64,7 @@ public class NodeBuilder(
         id: String? = null,
         crossinline block: NodeBuilder.(T) -> Unit = {}
     ): T {
-        val element = document.createElement(name).unsafeCast<T>()
+        val element = root.ownerDocument!!.createElement(name).unsafeCast<T>()
         if (klass != null) {
             element.className = klass
         }
@@ -83,13 +83,18 @@ public class NodeBuilder(
         id: String? = null,
         crossinline block: NodeBuilder.(T) -> Unit = {}
     ): T {
-        val element = document.createElementNS(namespace, name).unsafeCast<T>()
+
+        val element = root.ownerDocument!!.createElementNS(
+            namespace, name
+        ).unsafeCast<T>()
+
         if (klass != null) {
             element["class"] = klass
         }
         if (id != null) {
             element.id = id
         }
+
         NodeBuilder(root = element).block(element)
         root.appendChild(element)
         return element
@@ -106,7 +111,9 @@ public class NodeBuilder(
         if (lastChild != null && lastChild is Text) {
             lastChild.appendData(this)
         } else {
-            root.appendChild(document.createTextNode(this))
+            root.appendChild(
+                root.ownerDocument!!.createTextNode(this)
+            )
         }
     }
 
