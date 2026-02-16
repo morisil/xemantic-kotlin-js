@@ -14,5 +14,24 @@
  * limitations under the License.
  */
 
-package com.xemantic.kotlin.js
+package com.xemantic.kotlin.js.collections
 
+import kotlin.js.collections.JsMap
+
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun <K, V> JsMap<K, V>.get(
+    key: K
+): V? = asDynamic().get(key)
+
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun <K, V> JsMap<K, V>.set(key: K, value: V) {
+    asDynamic().set(key, value)
+}
+
+public inline val JsMap<*, *>.size: Int get() = asDynamic().size
+
+@Suppress("NOTHING_TO_INLINE")
+public inline fun JsMap<*, *>.isEmpty(): Boolean = size == 0
+
+@Suppress("NOTHING_TO_INLINE")
+public inline fun JsMap<*, *>.isNotEmpty(): Boolean = !isEmpty()

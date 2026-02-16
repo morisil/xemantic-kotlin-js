@@ -65,7 +65,9 @@ kotlin {
         )
         extraWarnings = true
         progressiveMode = true
-        //optIn.addAll("add opt ins here")
+        optIn.addAll(
+            "kotlin.js.ExperimentalJsCollectionsApi"
+        )
     }
 
     jvm() // needed only to verify non-JS tests

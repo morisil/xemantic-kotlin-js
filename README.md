@@ -21,7 +21,9 @@ Kotlin Multiplatform library providing type-safe DSL for constructing HTML5 and 
 
 ## Why?
 
-A general set of JavaScript utilities for Kotlin/JS and Kotlin/WASM, including a DOM tree builder DSL.
+A general set of JavaScript utilities for Kotlin/JS and Kotlin/WASM, including idiomatic Kotlin extensions
+for JavaScript collections (`JsArray`, `JsMap`, `JsSet`), plain JS objects, DOM utilities,
+and a DOM tree builder DSL.
 
 ## Usage
 
@@ -30,6 +32,89 @@ In `build.gradle.kts` add:
 ```kotlin
 dependencies {
     implementation("com.xemantic.kotlin:xemantic-kotlin-js:0.1")
+}
+```
+
+## Features
+
+### `globalThis` access
+
+The [`globalThis`](src/jsMain/kotlin/JsGlobal.kt) property provides access to the JavaScript
+[`globalThis`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis)
+object as a `dynamic` value:
+
+```kotlin
+val value = globalThis.someGlobalProperty
+globalThis.myFlag = true
+```
+
+### `JsObject`
+
+The [`JsObject`](src/jsMain/kotlin/JsObjects.kt) external interface represents a plain JavaScript
+object (`{}`), with operator extensions for bracket access:
+
+```kotlin
+val obj = JsObject()
+obj["name"] = "Alice"
+obj["age"] = 30
+val name: String = obj["name"]  // "Alice"
+
+obj.isEmpty()       // false
+obj.isNotEmpty()    // true
+obj.isNullOrEmpty() // false
+```
+
+### JS Collections
+
+Kotlin's experimental `JsArray`, `JsMap`, and `JsSet` types lack many common operations.
+This library adds idiomatic Kotlin extensions for all three.
+
+#### [`JsArray`](src/jsMain/kotlin/collections/JsArrays.kt)
+
+```kotlin
+val array = jsArrayOf(1, 2, 3)
+array.length              // 3
+array[0]                  // 1
+array[1] = 10             // indexed set
+array += 4                // push via += operator
+array.push(5)             // push
+array.map { it * 2 }      // JsArray(2, 20, 6, 8, 10)
+array.join(", ")          // "1, 10, 3, 4, 5"
+array.isEmpty()           // false
+```
+
+#### [`JsMap`](src/jsMain/kotlin/collections/JsMaps.kt)
+
+```kotlin
+val map = JsMap<String, Int>()
+map["x"] = 1
+map["y"] = 2
+map["x"]           // 1
+map.size            // 2
+map.isEmpty()       // false
+```
+
+#### [`JsSet`](src/jsMain/kotlin/collections/JsSets.kt)
+
+```kotlin
+val set = jsSetOf("a", "b", "c")
+"a" in set          // true (contains operator)
+"z" in set          // false
+set.size            // 3
+set.isEmpty()       // false
+```
+
+### DOM: `ItemArrayLike.forEach`
+
+The [`forEach`](src/jsMain/kotlin/dom/ItemArrayLikes.kt) extension on `ItemArrayLike<T>` enables
+iteration over DOM collections like `NamedNodeMap` and `NodeList`:
+
+```kotlin
+element.attributes.forEach { attr ->
+    println("${attr.name}=${attr.value}")
+}
+element.childNodes.forEach { node ->
+    println(node.nodeName)
 }
 ```
 
