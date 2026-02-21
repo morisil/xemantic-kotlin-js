@@ -16,4 +16,4 @@
 
 package com.xemantic.kotlin.js
 
-public val globalThis: dynamic = js("globalThis")
+public inline val globalThis: dynamic get() = js("globalThis")

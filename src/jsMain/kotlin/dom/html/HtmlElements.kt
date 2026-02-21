@@ -17,6 +17,8 @@
 package com.xemantic.kotlin.js.dom.html
 
 import com.xemantic.kotlin.js.dom.NodeBuilder
+import com.xemantic.kotlin.js.dom.aria.aria
+import com.xemantic.kotlin.js.dom.aria.hidden
 import org.w3c.dom.*
 
 // region Document structure
@@ -836,6 +838,9 @@ public inline fun NodeBuilder.slot(
 @Suppress("NOTHING_TO_INLINE")
 public inline fun NodeBuilder.icon(
     name: String
-): HTMLElement = i { +name }
+): HTMLElement = i {
+    aria.hidden = true
+    +name
+}
 
 // endregion

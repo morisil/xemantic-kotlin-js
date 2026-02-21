@@ -16,7 +16,15 @@
 
 package com.xemantic.kotlin.js.test.mvvm
 
-import com.xemantic.kotlin.js.dom.ariaLabel
+import com.xemantic.kotlin.js.dom.aria.aria
+import com.xemantic.kotlin.js.dom.aria.label
+import com.xemantic.kotlin.js.dom.aria.role
+import com.xemantic.kotlin.js.dom.element.minusAssign
+import com.xemantic.kotlin.js.dom.element.plusAssign
+import com.xemantic.kotlin.js.dom.event.onClick
+import com.xemantic.kotlin.js.dom.event.onInput
+import com.xemantic.kotlin.js.dom.event.onSubmit
+import com.xemantic.kotlin.js.dom.hidden
 import com.xemantic.kotlin.js.dom.html.*
 import com.xemantic.kotlin.js.dom.node
 import kotlinx.coroutines.flow.launchIn
@@ -24,16 +32,15 @@ import kotlinx.coroutines.flow.onEach
 
 fun loginView(
     viewModel: LoginViewModel
-) = node { form("app-login") {
-
-    it.onsubmit = { event -> event.preventDefault() }
+) = node.form("app-login") {
+    aria.label = "Login"
+    onSubmit { it.preventDefault() }
 
     div("field label border round prefix") {
         icon("mail")
         input("large border", name = "username", type = "text") { input ->
-            input.oninput = {
-                viewModel.onUsernameChanged(input.value)
-            }
+            aria.label = "Username"
+            onInput { viewModel.onUsernameChanged(input.value) }
         }
         label { +"Username" }
     }
@@ -41,44 +48,44 @@ fun loginView(
     div("field label border round prefix") {
         icon("key")
         input("large border", name = "password", type = "password") { input ->
-            input.oninput = {
-                viewModel.onPasswordChanged(input.value)
-            }
+            aria.label = "Password"
+            onInput { viewModel.onPasswordChanged(input.value) }
         }
         label { +"Password" }
     }
 
     nav("no-space") {
-        button("large", type = "submit") {
-            it.ariaLabel = "Submit"
+        button("large", type = "submit") { button ->
+            aria.label = "Submit"
+            onClick { viewModel.onSubmit() }
             viewModel.submitEnabled.onEach { enabled ->
-                it.disabled = !enabled
+                button.disabled = !enabled
             }.launchIn(viewModel.scope)
-            it.onclick = {
-                viewModel.onSubmit()
-            }
             +"Submit"
         }
     }
 
     progress("circle") {
-        it.hidden = true
+        role = "status"
+        aria.label = "Loading"
+        hidden = true
         viewModel.loading.onEach { loading ->
-            it.hidden = !loading
+            hidden = !loading
         }.launchIn(viewModel.scope)
     }
 
-    div("snackbar") {
+    div("snackbar") { snackbar ->
+        role = "alert"
         icon("warning")
-        val errorSpan = span {}
+        val errorSpan = span()
         viewModel.error.onEach { error ->
             if (error != null) {
-                it.classList.add("active")
+                snackbar += "active"
                 errorSpan.textContent = error
             } else {
-                it.classList.remove("active")
+                snackbar -= "active"
             }
         }.launchIn(viewModel.scope)
     }
 
-}}
+}

@@ -16,28 +16,16 @@
 
 package com.xemantic.kotlin.js.dom
 
+import com.xemantic.kotlin.js.dom.element.set
 import kotlinx.browser.document
-import org.w3c.dom.Element
-import org.w3c.dom.Node
-import org.w3c.dom.Text
+import org.w3c.dom.*
 
 @DslMarker
 public annotation class DomDsl
 
-/**
- * Builds a single DOM node. It returns the node returned by the [block].
- * Note: if multiple elements were created, only the last one will be returned.
- *
- * @param T the type of [Node].
- * @param block the node builder.
- * @return the node instance of type [T]
- */
-@Suppress("UNCHECKED_CAST")
-public inline fun <T : Node> node(
-    crossinline block: NodeBuilder.() -> T
-): T = NodeBuilder(
+public val node: NodeBuilder get() = NodeBuilder(
     root = document.createDocumentFragment()
-).block()
+)
 
 public inline operator fun <T : Node> T.invoke(
     crossinline block: NodeBuilder.() -> Unit
@@ -118,3 +106,37 @@ public class NodeBuilder(
     }
 
 }
+
+public inline val NodeBuilder.dataset: DataBuilder get() = DataBuilder(
+    root.unsafeCast<HTMLElement>()
+)
+
+public class DataBuilder(
+    @PublishedApi
+    internal val element: HTMLElement
+) {
+
+    @Suppress("NOTHING_TO_INLINE")
+    public inline operator fun get(
+        name: String
+    ): String? = element.dataset[name]
+
+    @Suppress("NOTHING_TO_INLINE")
+    public inline operator fun set(
+        name: String,
+        value: String?
+    ) {
+        if (value != null) {
+            element.dataset[name] = value
+        } else {
+            @Suppress("UNUSED_VARIABLE")
+            val dataset = element.dataset
+            js("delete dataset[name]")
+        }
+    }
+
+}
+
+public inline var NodeBuilder.hidden: Boolean
+    get() = root.unsafeCast<HTMLElement>().hidden
+    set(value) { root.unsafeCast<HTMLElement>().hidden = value }
