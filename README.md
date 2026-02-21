@@ -208,29 +208,50 @@ fun `should log in on successful authentication`() = runTest {
 The `LoginView` uses the DOM DSL to build HTML and binds ViewModel state flows directly to DOM properties:
 
 ```kotlin
-fun loginView(viewModel: LoginViewModel) = node { form("app-login") {
-    it.onsubmit = { event -> event.preventDefault() }
+fun loginView(viewModel: LoginViewModel) = node.form("app-login") {
+    aria.label = "Login"
+    onSubmit { it.preventDefault() }
     div("field label border round prefix") {
         icon("mail")
         input("large border", name = "username", type = "text") { input ->
-            input.oninput = {
-                viewModel.onUsernameChanged(input.value)
-            }
+            aria.label = "Username"
+            onInput { viewModel.onUsernameChanged(input.value) }
         }
         label { +"Username" }
     }
     // ...
     nav("no-space") {
         button("large", type = "submit") { button ->
-            button.ariaLabel = "Submit"
+            aria.label = "Submit"
+            onClick { viewModel.onSubmit() }
             viewModel.submitEnabled.onEach { enabled ->
                 button.disabled = !enabled
             }.launchIn(viewModel.scope)
-            button.onclick = { viewModel.onSubmit() }
             +"Submit"
         }
     }
-}}
+    progress("circle") {
+        role = "status"
+        aria.label = "Loading"
+        hidden = true
+        viewModel.loading.onEach { loading ->
+            hidden = !loading
+        }.launchIn(viewModel.scope)
+    }
+    div("snackbar") { snackbar ->
+        role = "alert"
+        icon("warning")
+        val errorSpan = span()
+        viewModel.error.onEach { error ->
+            if (error != null) {
+                snackbar += "active"
+                errorSpan.textContent = error
+            } else {
+                snackbar -= "active"
+            }
+        }.launchIn(viewModel.scope)
+    }
+}
 ```
 
 The view function returns a DOM node that can be appended to the document. ViewModel `StateFlow`s are collected with `onEach { ... }.launchIn(viewModel.scope)` to reactively update DOM properties like `disabled` and `hidden`.
