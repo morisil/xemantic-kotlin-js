@@ -198,8 +198,14 @@ public inline fun NodeBuilder.image(
 public inline fun NodeBuilder.a(
     klass: String? = null,
     id: String? = null,
+    href: String? = null,
+    target: String? = null,
     crossinline block: NodeBuilder.(SVGAElement) -> Unit = {}
-): SVGAElement = svgElement("a", klass, id, block)
+): SVGAElement = svgElement("a", klass, id) {
+    if (href != null) { it.setAttribute("href", href) }
+    if (target != null) { it.setAttribute("target", target) }
+    block(it)
+}
 
 // Filter
 

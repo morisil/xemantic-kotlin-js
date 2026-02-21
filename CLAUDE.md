@@ -29,23 +29,38 @@ The core feature is a type-safe DSL for building DOM trees:
 
 - **DomDsl.kt**: Core DSL infrastructure
   - `@DomDsl` marker annotation for scope control
+  - `node` property returning a `NodeBuilder` on a `DocumentFragment` for creating detached DOM trees (e.g., `node.div { }`)
   - `Node.invoke()` extension to start building children on any existing node
   - `NodeBuilder` class with:
     - `String.invoke()` for arbitrary element names (e.g., `"my:component" { }`)
     - `element()` function for creating typed elements
     - `String.unaryPlus()` for text nodes (`+"Hello"`)
+  - `NodeBuilder.dataset` extension with `DataBuilder` for `data-*` attributes (`dataset["key"] = "value"`, `dataset["key"] = null` to remove)
+  - `NodeBuilder.hidden` property for toggling the `hidden` attribute
 
-- **HtmlElements.kt**: Type-safe HTML element functions (`div`, `button`, `span`, `a`) that provide properly typed element receivers (e.g., `HTMLDivElement`, `HTMLButtonElement`)
+- **dom/aria/**: Type-safe ARIA attribute support
+  - `AriaAttributes.kt`: ARIA attribute property definitions (`role`, `aria.label`, `aria.hidden`, `aria.disabled`, `aria.expanded`, `aria.selected`)
+  - `AriaBuilder.kt`: DSL builder for ARIA attributes via `aria.label = "text"` syntax, with generic `aria["name"]` indexed access
+
+- **dom/element/Elements.kt**: Low-level `Element` attribute extensions (`Element.get()`, `Element.set()`, `Element += "class"`, `Element -= "class"`)
+
+- **dom/event/Events.kt**: Event handler helpers (`onClick { }`, `onSubmit { }`, `onInput { }`)
+
+- **dom/html/HtmlElements.kt**: Type-safe HTML element functions (`div`, `button`, `span`, `a`, `icon`, etc.) that provide properly typed element receivers (e.g., `HTMLDivElement`, `HTMLButtonElement`)
+
+- **dom/svg/SvgElements.kt**: Type-safe SVG element functions (`svg`, `rect`, `circle`, `path`, etc.)
 
 ### Usage Pattern
 
 ```kotlin
-node { div("className") {
+node.div("className") {
     button("btn") {
-        it.onclick = { }
+        aria.label = "Click me"
+        dataset["action"] = "submit"
+        onClick { }
         +"Click me"
     }
-}}
+}
 ```
 
 ## Testing

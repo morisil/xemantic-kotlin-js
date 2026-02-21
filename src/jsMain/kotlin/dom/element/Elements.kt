@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.xemantic.kotlin.js.dom
+package com.xemantic.kotlin.js.dom.element
 
 import org.w3c.dom.Element
 
@@ -25,9 +25,19 @@ public inline operator fun Element.get(
 
 @Suppress("NOTHING_TO_INLINE")
 public inline operator fun Element.set(
-    key: String,
+    name: String,
     value: String?
 ) {
-    if (value != null) setAttribute(key, value)
-    else removeAttribute(key)
+    if (value != null) setAttribute(name, value)
+    else removeAttribute(name)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Element.plusAssign(klass: String) {
+    classList.add(klass)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Element.minusAssign(klass: String) {
+    classList.remove(klass)
 }

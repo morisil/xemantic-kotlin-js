@@ -16,8 +16,8 @@
 
 package com.xemantic.kotlin.js.dom.html
 
+import com.xemantic.kotlin.js.dom.element.set
 import com.xemantic.kotlin.js.dom.node
-import com.xemantic.kotlin.js.dom.set
 import com.xemantic.kotlin.test.sameAsHtml
 import com.xemantic.markanywhere.js.toSemanticEvents
 import com.xemantic.markanywhere.render.render
@@ -31,14 +31,14 @@ class HtmlElementsTest {
     @Test
     fun `should create document structure elements - html head body title`() = runTest {
         // when
-        val html = node { html(lang = "en") {
+        val html = node.html(lang = "en") {
             head {
                 title { +"Page Title" }
             }
             body {
                 div { +"Content" }
             }
-        }}
+        }
 
         // then
         html.toSemanticEvents().render() sameAsHtml """
@@ -64,11 +64,11 @@ class HtmlElementsTest {
     @Test
     fun `should create metadata elements - base link meta`() = runTest {
         // when
-        val head = node { head {
+        val head = node.head {
             base { href = "https://example.com/" }
             link(rel = "stylesheet", href = "style.css")
             meta(name = "viewport", content = "width=device-width")
-        }}
+        }
 
         // then
         head.toSemanticEvents().render() sameAsHtml """
@@ -83,14 +83,14 @@ class HtmlElementsTest {
     @Test
     fun `should create scripting elements - style script noscript`() = runTest {
         // when
-        val body = node { body {
+        val body = node.body {
             style { +"body { color: red; }" }
             script { +"console.log('hello')" }
             script(src = "app.js")
             noscript {
                 p { +"JavaScript is required." }
             }
-        }}
+        }
 
         // then
         body.toSemanticEvents().render() sameAsHtml """
@@ -119,7 +119,7 @@ class HtmlElementsTest {
     @Test
     fun `should create section elements - header footer main nav`() = runTest {
         // when
-        val body = node { body {
+        val body = node.body {
             header("site-header") {
                 nav("main-nav") {
                     +"Navigation"
@@ -131,7 +131,7 @@ class HtmlElementsTest {
             footer("site-footer") {
                 +"Footer content"
             }
-        }}
+        }
 
         // then
         body.toSemanticEvents().render() sameAsHtml """
@@ -154,7 +154,7 @@ class HtmlElementsTest {
     @Test
     fun `should create section elements - section article aside address`() = runTest {
         // when
-        val body = node { body {
+        val body = node.body {
             section("main-section") {
                 article("blog-post") {
                     +"Article content"
@@ -169,7 +169,7 @@ class HtmlElementsTest {
                     +"contact@example.com"
                 }
             }
-        }}
+        }
 
         // then
         body.toSemanticEvents().render() sameAsHtml """
@@ -192,7 +192,7 @@ class HtmlElementsTest {
     @Test
     fun `should create section elements - hgroup search`() = runTest {
         // when
-        val body = node { body {
+        val body = node.body {
             hgroup(id = "title-group") {
                 h1 { +"Main Title" }
                 p { +"Subtitle" }
@@ -208,7 +208,7 @@ class HtmlElementsTest {
                     }
                 }
             }
-        }}
+        }
 
         // then
         body.toSemanticEvents().render() sameAsHtml """
@@ -236,14 +236,17 @@ class HtmlElementsTest {
 
     @Test
     fun `should create heading elements - h1 through h6`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             h1("title") { +"Heading 1" }
             h2("subtitle") { +"Heading 2" }
             h3 { +"Heading 3" }
             h4 { +"Heading 4" }
             h5 { +"Heading 5" }
             h6 { +"Heading 6" }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml /* language=html */ """
             <body>
               <h1 class="title">
@@ -274,7 +277,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create grouping content elements - div p pre blockquote`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             div("container") {
                 p("intro") {
                     +"This is a paragraph."
@@ -288,7 +292,9 @@ class HtmlElementsTest {
                     }
                 }
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <div class="container">
@@ -309,7 +315,7 @@ class HtmlElementsTest {
     @Test
     fun `should create figure figcaption and hr elements`() = runTest {
         // when
-        val body = node { body {
+        val body = node.body {
             figure("image-figure") {
                 img(src = "image.png", alt = "An image")
                 figcaption {
@@ -317,7 +323,7 @@ class HtmlElementsTest {
                 }
             }
             hr("divider")
-        }}
+        }
 
         // then
         body.toSemanticEvents().render() sameAsHtml """
@@ -339,7 +345,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create list elements - ul ol li`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             ul("menu") {
                 li { +"Item 1" }
                 li("active") { +"Item 2" }
@@ -350,7 +357,9 @@ class HtmlElementsTest {
                 li { +"First step" }
                 li { +"Second step" }
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <ul class="menu">
@@ -378,7 +387,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create definition list and menu elements - dl dt dd menu`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             dl("glossary") {
                 dt { +"Term 1" }
                 dd { +"Definition 1" }
@@ -390,7 +400,9 @@ class HtmlElementsTest {
                 li { button { +"Copy" } }
                 li { button { +"Paste" } }
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <dl class="glossary">
@@ -428,7 +440,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create table elements - table caption colgroup col thead tbody tfoot tr th td`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             table("data-table") {
                 caption { +"Monthly Sales" }
                 colgroup {
@@ -462,7 +475,9 @@ class HtmlElementsTest {
                     }
                 }
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <table class="data-table">
@@ -533,7 +548,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create text semantic elements - span a strong em b i u s small mark`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             p {
                 span("highlight") { +"Span text" }
                 +" "
@@ -561,7 +577,9 @@ class HtmlElementsTest {
                 +" "
                 s { +"Strikethrough" }
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <p>
@@ -579,7 +597,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create technical text elements - sub sup abbr cite code dfn kbd samp var`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             p {
                 +"H"
                 sub { +"2" }
@@ -615,7 +634,9 @@ class HtmlElementsTest {
                 `var` { +"x" }
                 +" is an integer."
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <p>
@@ -642,7 +663,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create quotation and editing elements - q time data ins del`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             p {
                 q(cite = "https://example.com") {
                     +"An inline quote"
@@ -667,7 +689,9 @@ class HtmlElementsTest {
                     +"New text"
                 }
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <p>
@@ -688,7 +712,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create internationalization elements - ruby rt rp bdi bdo`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             ruby {
                 +"明日"
                 rp { +"(" }
@@ -705,7 +730,9 @@ class HtmlElementsTest {
                     +"This text will be reversed."
                 }
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <ruby>明日<rp>(</rp><rt>あした</rt><rp>)</rp></ruby>
@@ -721,7 +748,8 @@ class HtmlElementsTest {
 
     @Test
     fun `should create line break elements - br wbr`() = runTest {
-        val body = node { body {
+        // when
+        val body = node.body {
             p {
                 +"Line 1"
                 br()
@@ -734,7 +762,9 @@ class HtmlElementsTest {
                 wbr()
                 +"fragilistic"
             }
-        }}
+        }
+
+        // then
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <p>
@@ -753,7 +783,7 @@ class HtmlElementsTest {
 
     @Test
     fun `should create form structure elements - form fieldset legend label input button`() = runTest {
-        val body = node { body {
+        val body = node.body {
             form("login-form", action = "/login", method = "POST") {
                 fieldset {
                     legend { +"Login" }
@@ -771,7 +801,7 @@ class HtmlElementsTest {
                     +"Login"
                 }
             }
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <form class="login-form" action="/login" method="POST">
@@ -789,7 +819,7 @@ class HtmlElementsTest {
 
     @Test
     fun `should create form selection elements - select option optgroup textarea datalist`() = runTest {
-        val body = node { body {
+        val body = node.body {
             form {
                 textarea(
                     "description",
@@ -819,7 +849,7 @@ class HtmlElementsTest {
                     option(value = "Firefox")
                 }
             }
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <form>
@@ -831,7 +861,7 @@ class HtmlElementsTest {
 
     @Test
     fun `should create form output elements - output meter progress`() = runTest {
-        val body = node { body {
+        val body = node.body {
             form {
                 output(name = "result") {
                     it["for"] = "a b"
@@ -847,7 +877,7 @@ class HtmlElementsTest {
                 it.optimum = 0.8
                 +"70%"
             }
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <form>
@@ -864,7 +894,7 @@ class HtmlElementsTest {
 
     @Test
     fun `should create image elements - img picture source`() = runTest {
-        val body = node { body {
+        val body = node.body {
             img(src = "photo.jpg", alt = "A photo") {
                 width = 300
                 height = 200
@@ -874,7 +904,7 @@ class HtmlElementsTest {
                 source { srcset = "photo-small.jpg"; media = "(max-width: 799px)" }
                 img(src = "photo.jpg", alt = "A photo")
             }
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <img src="photo.jpg" alt="A photo" width="300" height="200"/><picture class="responsive-image"><source srcset="photo-large.jpg" media="(min-width: 800px)"/><source srcset="photo-small.jpg" media="(max-width: 799px)"/><img src="photo.jpg" alt="A photo"/></picture>
@@ -884,7 +914,7 @@ class HtmlElementsTest {
 
     @Test
     fun `should create media elements - audio video track`() = runTest {
-        val body = node { body {
+        val body = node.body {
             audio("player") {
                 it.controls = true
                 source { src = "audio.mp3"; type = "audio/mpeg" }
@@ -899,7 +929,7 @@ class HtmlElementsTest {
                 track { src = "subtitles.vtt"; kind = "subtitles"; srclang = "en"; label = "English" }
                 +"Your browser does not support video."
             }
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <audio class="player" controls=""><source src="audio.mp3" type="audio/mpeg"/><source src="audio.ogg" type="audio/ogg"/>Your browser does not support audio.</audio><video class="video-player" controls="" width="640" height="480"><source src="video.mp4" type="video/mp4"/><track src="subtitles.vtt" kind="subtitles" srclang="en" label="English"/>Your browser does not support video.</video>
@@ -910,7 +940,7 @@ class HtmlElementsTest {
     @Test
     fun `should create embedded content elements - iframe embed object canvas map area`() = runTest {
         // when
-        val body = node { body {
+        val body = node.body {
             iframe("embedded", src = "https://example.com") {
                 width = "600"
                 height = "400"
@@ -941,7 +971,7 @@ class HtmlElementsTest {
                     href = "phone.html"
                 }
             }
-        }}
+        }
 
         // then
         body.toSemanticEvents().render() sameAsHtml """
@@ -963,7 +993,7 @@ class HtmlElementsTest {
 
     @Test
     fun `should create interactive elements - details summary dialog`() = runTest {
-        val body = node { body {
+        val body = node.body {
             details("collapsible") {
                 it.open = true
                 summary { +"Click to expand" }
@@ -974,7 +1004,7 @@ class HtmlElementsTest {
                 p { +"Dialog content" }
                 button(id = "close") { +"Close" }
             }
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <details class="collapsible" open="">
@@ -1004,7 +1034,7 @@ class HtmlElementsTest {
 
     @Test
     fun `should create template and slot elements`() = runTest {
-        val body = node { body {
+        val body = node.body {
             template(id = "row-template") {
                 tr {
                     td("name")
@@ -1019,7 +1049,7 @@ class HtmlElementsTest {
                     +"Default content"
                 }
             }
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
               <template id="row-template">
@@ -1043,13 +1073,13 @@ class HtmlElementsTest {
 
     @Test
     fun `should create icon helper element`() = runTest {
-        val body = node { body {
+        val body = node.body {
             icon("home")
             icon("settings")
-        }}
+        }
         body.toSemanticEvents().render() sameAsHtml """
             <body>
-              <i>home</i><i>settings</i>
+              <i aria-hidden="true">home</i><i aria-hidden="true">settings</i>
             </body>
         """.trimIndent()
     }

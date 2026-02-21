@@ -16,6 +16,7 @@
 
 package com.xemantic.kotlin.js.dom
 
+import com.xemantic.kotlin.js.dom.element.set
 import com.xemantic.kotlin.js.dom.html.div
 import com.xemantic.kotlin.js.dom.html.li
 import com.xemantic.kotlin.js.dom.html.ul
@@ -30,12 +31,10 @@ class ItemArrayLikesTest {
     @Test
     fun `should iterate over all items in ItemArrayLike`() {
         // given
-        val element = node {
-            div {
-                it["id"] = "test"
-                it["class"] = "foot"
-                it["data-value"] = "bar"
-            }
+        val element = node.div {
+            it["id"] = "test"
+            it["class"] = "foot"
+            it["data-value"] = "bar"
         }
 
         // when
@@ -64,12 +63,10 @@ class ItemArrayLikesTest {
     @Test
     fun `should iterate over child nodes`() {
         // given
-        val parent = node {
-            ul {
-                li()
-                li()
-                li()
-            }
+        val parent = node.ul {
+            li()
+            li()
+            li()
         }
 
         // when
@@ -88,10 +85,8 @@ class ItemArrayLikesTest {
     @Test
     fun `should iterate over single item`() {
         // given
-        val element = node {
-            div {
-                it["id"] = "only"
-            }
+        val element = node.div {
+            it["id"] = "only"
         }
 
         // when

@@ -16,8 +16,8 @@
 
 package com.xemantic.kotlin.js.dom.svg
 
+import com.xemantic.kotlin.js.dom.element.set
 import com.xemantic.kotlin.js.dom.node
-import com.xemantic.kotlin.js.dom.set
 import com.xemantic.kotlin.test.sameAs
 import com.xemantic.markanywhere.js.toSemanticEvents
 import com.xemantic.markanywhere.render.render
@@ -29,342 +29,331 @@ class SvgElementsTest {
     @Test
     fun `should create SVG element tree with all possible SVG tags`() = runTest {
         // when
-        val svg = node {
-            svg("main-image") { svg ->
-                svg["viewBox"] = "0 0 800 600"
-                svg["width"] = "800"
-                svg["height"] = "600"
-                title { +"Landscape Scene" }
-                desc { +"An SVG landscape with mountains, trees, and sky" }
-                metadata { +"Created with xemantic-kotlin-js" }
-                style { +".ground { fill: #567d46; }" }
-                script { +"document.querySelector('svg').dataset.loaded = 'true'" }
-                view {
-                    this["id"] = "detail"
-                    this["viewBox"] = "200 150 400 300"
+        val svg = node.svg("main-image") { svg ->
+            svg["viewBox"] = "0 0 800 600"
+            svg["width"] = "800"
+            svg["height"] = "600"
+            title { +"Landscape Scene" }
+            desc { +"An SVG landscape with mountains, trees, and sky" }
+            metadata { +"Created with xemantic-kotlin-js" }
+            style { +".ground { fill: #567d46; }" }
+            script { +"document.querySelector('svg').dataset.loaded = 'true'" }
+            view(id = "detail") {
+                this["viewBox"] = "200 150 400 300"
+            }
+            defs {
+                linearGradient(id = "skyGradient") {
+                    it["x1"] = "0"
+                    it["y1"] = "0"
+                    it["x2"] = "0"
+                    it["y2"] = "1"
+                    stop {
+                        this["offset"] = "0%"
+                        this["stop-color"] = "#87CEEB"
+                    }
+                    stop {
+                        this["offset"] = "100%"
+                        this["stop-color"] = "#E0F0FF"
+                    }
                 }
-                defs {
-                    linearGradient {
-                        it.id = "skyGradient"
-                        it["x1"] = "0"
-                        it["y1"] = "0"
-                        it["x2"] = "0"
-                        it["y2"] = "1"
-                        stop {
-                            this["offset"] = "0%"
-                            this["stop-color"] = "#87CEEB"
-                        }
-                        stop {
-                            this["offset"] = "100%"
-                            this["stop-color"] = "#E0F0FF"
-                        }
+                radialGradient {
+                    it["id"] = "sunGlow"
+                    it["cx"] = "0.5"
+                    it["cy"] = "0.5"
+                    it["r"] = "0.5"
+                    stop {
+                        this["offset"] = "0%"
+                        this["stop-color"] = "#FFD700"
                     }
-                    radialGradient {
-                        it["id"] = "sunGlow"
-                        it["cx"] = "0.5"
-                        it["cy"] = "0.5"
-                        it["r"] = "0.5"
-                        stop {
-                            this["offset"] = "0%"
-                            this["stop-color"] = "#FFD700"
-                        }
-                        stop {
-                            this["offset"] = "100%"
-                            this["stop-color"] = "transparent"
-                        }
+                    stop {
+                        this["offset"] = "100%"
+                        this["stop-color"] = "transparent"
                     }
-                    pattern {
-                        it["id"] = "grass"
+                }
+                pattern(id = "grass") {
+                    it["width"] = "10"
+                    it["height"] = "10"
+                    it["patternUnits"] = "userSpaceOnUse"
+                    rect {
                         it["width"] = "10"
                         it["height"] = "10"
-                        it["patternUnits"] = "userSpaceOnUse"
-                        rect {
-                            it["width"] = "10"
-                            it["height"] = "10"
-                            it["fill"] = "#567d46"
-                        }
-                        circle {
-                            it["cx"] = "5"
-                            it["cy"] = "5"
-                            it["r"] = "2"
-                            it["fill"] = "#4a6b3c"
-                        }
-                    }
-                    marker {
-                        it["id"] = "arrowhead"
-                        it["markerWidth"] = "10"
-                        it["markerHeight"] = "7"
-                        it["refX"] = "10"
-                        it["refY"] = "3.5"
-                        it["orient"] = "auto"
-                        path {
-                            it["d"] = "M 0 0 L 10 3.5 L 0 7 Z"
-                            it["fill"] = "#333"
-                        }
-                    }
-                    clipPath {
-                        it["id"] = "sceneClip"
-                        rect {
-                            it["width"] = "800"
-                            it["height"] = "600"
-                            it["rx"] = "20"
-                        }
-                    }
-                    mask {
-                        it["id"] = "fadeMask"
-                        ellipse {
-                            it["cx"] = "400"
-                            it["cy"] = "300"
-                            it["rx"] = "350"
-                            it["ry"] = "250"
-                            it["fill"] = "white"
-                        }
-                    }
-                    filter {
-                        it["id"] = "shadow"
-                        feGaussianBlur {
-                            this["in"] = "SourceAlpha"
-                            this["stdDeviation"] = "3"
-                            this["result"] = "blur"
-                        }
-                        feOffset {
-                            this["in"] = "blur"
-                            this["dx"] = "2"
-                            this["dy"] = "2"
-                            this["result"] = "offsetBlur"
-                        }
-                        feFlood {
-                            this["flood-color"] = "rgba(0,0,0,0.4)"
-                            this["result"] = "flood"
-                        }
-                        feComposite {
-                            this["in"] = "flood"
-                            this["in2"] = "offsetBlur"
-                            this["operator"] = "in"
-                            this["result"] = "shadow"
-                        }
-                        feBlend {
-                            this["in"] = "SourceGraphic"
-                            this["in2"] = "shadow"
-                            this["mode"] = "normal"
-                        }
-                        feColorMatrix {
-                            this["type"] = "saturate"
-                            this["values"] = "1.2"
-                        }
-                        feComponentTransfer {
-                            feFuncR {
-                                this["type"] = "linear"
-                                this["slope"] = "1.1"
-                            }
-                            feFuncG {
-                                this["type"] = "linear"
-                                this["slope"] = "1.1"
-                            }
-                            feFuncB {
-                                this["type"] = "linear"
-                                this["slope"] = "0.9"
-                            }
-                            feFuncA {
-                                this["type"] = "identity"
-                            }
-                        }
-                        feConvolveMatrix {
-                            this["order"] = "3"
-                            this["kernelMatrix"] = "0 -1 0 -1 5 -1 0 -1 0"
-                        }
-                        feDiffuseLighting {
-                            it["surfaceScale"] = "5"
-                            it["diffuseConstant"] = "1"
-                            feDistantLight {
-                                this["azimuth"] = "235"
-                                this["elevation"] = "40"
-                            }
-                        }
-                        feSpecularLighting {
-                            it["surfaceScale"] = "5"
-                            it["specularConstant"] = "0.75"
-                            it["specularExponent"] = "20"
-                            fePointLight {
-                                this["x"] = "150"
-                                this["y"] = "60"
-                                this["z"] = "200"
-                            }
-                            feSpotLight {
-                                this["x"] = "400"
-                                this["y"] = "0"
-                                this["z"] = "300"
-                                this["pointsAtX"] = "400"
-                                this["pointsAtY"] = "300"
-                                this["pointsAtZ"] = "0"
-                            }
-                        }
-                        feDisplacementMap {
-                            this["in"] = "SourceGraphic"
-                            this["in2"] = "turbulence"
-                            this["scale"] = "10"
-                        }
-                        feTurbulence {
-                            this["type"] = "fractalNoise"
-                            this["baseFrequency"] = "0.02"
-                            this["numOctaves"] = "3"
-                            this["result"] = "turbulence"
-                        }
-                        feImage {
-                            this["href"] = "texture.png"
-                            this["result"] = "texture"
-                        }
-                        feMorphology {
-                            this["operator"] = "dilate"
-                            this["radius"] = "2"
-                        }
-                        feMerge {
-                            feMergeNode {
-                                this["in"] = "offsetBlur"
-                            }
-                            feMergeNode {
-                                this["in"] = "SourceGraphic"
-                            }
-                        }
-                        feTile {
-                            this["in"] = "texture"
-                        }
-                    }
-                    symbol {
-                        it["id"] = "tree"
-                        it["viewBox"] = "0 0 40 80"
-                        polyline {
-                            it["points"] = "20,80 20,30 10,30 20,5 30,30 20,30"
-                            it["fill"] = "none"
-                            it["stroke"] = "#228B22"
-                            it["stroke-width"] = "2"
-                        }
-                    }
-                }
-                g("scene") {
-                    it["clip-path"] = "url(#sceneClip)"
-                    rect("sky") {
-                        it["width"] = "800"
-                        it["height"] = "400"
-                        it["fill"] = "url(#skyGradient)"
+                        it["fill"] = "#567d46"
                     }
                     circle {
-                        it["cx"] = "650"
-                        it["cy"] = "100"
-                        it["r"] = "50"
-                        it["fill"] = "url(#sunGlow)"
-                        animate {
-                            this["attributeName"] = "r"
-                            this["values"] = "48;52;48"
-                            this["dur"] = "3s"
-                            this["repeatCount"] = "indefinite"
-                        }
+                        it["cx"] = "5"
+                        it["cy"] = "5"
+                        it["r"] = "2"
+                        it["fill"] = "#4a6b3c"
                     }
+                }
+                marker(id = "arrowhead") {
+                    it["markerWidth"] = "10"
+                    it["markerHeight"] = "7"
+                    it["refX"] = "10"
+                    it["refY"] = "3.5"
+                    it["orient"] = "auto"
                     path {
-                        it["d"] = "M 0 350 Q 200 250 400 300 T 800 280 L 800 600 L 0 600 Z"
-                        it["fill"] = "url(#grass)"
+                        it["d"] = "M 0 0 L 10 3.5 L 0 7 Z"
+                        it["fill"] = "#333"
                     }
-                    line {
-                        it["x1"] = "0"
-                        it["y1"] = "400"
-                        it["x2"] = "800"
-                        it["y2"] = "400"
-                        it["stroke"] = "#333"
-                        it["stroke-width"] = "1"
+                }
+                clipPath(id = "sceneClip") {
+                    rect {
+                        it["width"] = "800"
+                        it["height"] = "600"
+                        it["rx"] = "20"
                     }
-                    polygon {
-                        it["points"] = "300,400 400,200 500,400"
-                        it["fill"] = "#8B7355"
-                    }
-                    polyline {
-                        it["points"] = "0,380 200,360 400,350 600,340 800,350"
-                        it["fill"] = "none"
-                        it["stroke"] = "#333"
-                        it["stroke-width"] = "2"
-                        it["marker-end"] = "url(#arrowhead)"
-                    }
+                }
+                mask(id = "fadeMask") {
                     ellipse {
                         it["cx"] = "400"
-                        it["cy"] = "420"
-                        it["rx"] = "200"
-                        it["ry"] = "20"
-                        it["fill"] = "rgba(0,0,0,0.1)"
+                        it["cy"] = "300"
+                        it["rx"] = "350"
+                        it["ry"] = "250"
+                        it["fill"] = "white"
                     }
-                    image {
-                        this["href"] = "cloud.png"
-                        this["x"] = "100"
-                        this["y"] = "50"
-                        this["width"] = "120"
-                        this["height"] = "60"
+                }
+                filter(id = "shadow") {
+                    feGaussianBlur {
+                        this["in"] = "SourceAlpha"
+                        this["stdDeviation"] = "3"
+                        this["result"] = "blur"
                     }
-                    use {
-                        this["href"] = "#tree"
-                        this["x"] = "150"
-                        this["y"] = "300"
-                        this["width"] = "40"
-                        this["height"] = "80"
+                    feOffset {
+                        this["in"] = "blur"
+                        this["dx"] = "2"
+                        this["dy"] = "2"
+                        this["result"] = "offsetBlur"
                     }
-                    a {
-                        it["href"] = "https://xemantic.com"
-                        text {
-                            it["x"] = "400"
-                            it["y"] = "560"
-                            it["text-anchor"] = "middle"
-                            it["font-family"] = "sans-serif"
-                            it["font-size"] = "16"
-                            tspan {
-                                it["font-weight"] = "bold"
-                                +"Landscape "
-                            }
-                            tspan {
-                                it["fill"] = "#666"
-                                +"Illustration"
-                            }
+                    feFlood {
+                        this["flood-color"] = "rgba(0,0,0,0.4)"
+                        this["result"] = "flood"
+                    }
+                    feComposite {
+                        this["in"] = "flood"
+                        this["in2"] = "offsetBlur"
+                        this["operator"] = "in"
+                        this["result"] = "shadow"
+                    }
+                    feBlend {
+                        this["in"] = "SourceGraphic"
+                        this["in2"] = "shadow"
+                        this["mode"] = "normal"
+                    }
+                    feColorMatrix {
+                        this["type"] = "saturate"
+                        this["values"] = "1.2"
+                    }
+                    feComponentTransfer {
+                        feFuncR {
+                            this["type"] = "linear"
+                            this["slope"] = "1.1"
+                        }
+                        feFuncG {
+                            this["type"] = "linear"
+                            this["slope"] = "1.1"
+                        }
+                        feFuncB {
+                            this["type"] = "linear"
+                            this["slope"] = "0.9"
+                        }
+                        feFuncA {
+                            this["type"] = "identity"
                         }
                     }
-                    text("path-label") {
-                        textPath {
-                            it["href"] = "#curvePath"
-                            +"Text along a curved path"
+                    feConvolveMatrix {
+                        this["order"] = "3"
+                        this["kernelMatrix"] = "0 -1 0 -1 5 -1 0 -1 0"
+                    }
+                    feDiffuseLighting {
+                        it["surfaceScale"] = "5"
+                        it["diffuseConstant"] = "1"
+                        feDistantLight {
+                            this["azimuth"] = "235"
+                            this["elevation"] = "40"
                         }
                     }
-                    foreignObject {
-                        it["x"] = "620"
-                        it["y"] = "460"
-                        it["width"] = "160"
-                        it["height"] = "80"
+                    feSpecularLighting {
+                        it["surfaceScale"] = "5"
+                        it["specularConstant"] = "0.75"
+                        it["specularExponent"] = "20"
+                        fePointLight {
+                            this["x"] = "150"
+                            this["y"] = "60"
+                            this["z"] = "200"
+                        }
+                        feSpotLight {
+                            this["x"] = "400"
+                            this["y"] = "0"
+                            this["z"] = "300"
+                            this["pointsAtX"] = "400"
+                            this["pointsAtY"] = "300"
+                            this["pointsAtZ"] = "0"
+                        }
                     }
-                    switch {
-                        g {
-                            it["requiredFeatures"] = "http://www.w3.org/TR/SVG11/feature#Shape"
-                            rect {
-                                it["x"] = "10"
-                                it["y"] = "10"
-                                it["width"] = "100"
-                                it["height"] = "40"
-                                it["fill"] = "#eee"
-                            }
+                    feDisplacementMap {
+                        this["in"] = "SourceGraphic"
+                        this["in2"] = "turbulence"
+                        this["scale"] = "10"
+                    }
+                    feTurbulence {
+                        this["type"] = "fractalNoise"
+                        this["baseFrequency"] = "0.02"
+                        this["numOctaves"] = "3"
+                        this["result"] = "turbulence"
+                    }
+                    feImage {
+                        this["href"] = "texture.png"
+                        this["result"] = "texture"
+                    }
+                    feMorphology {
+                        this["operator"] = "dilate"
+                        this["radius"] = "2"
+                    }
+                    feMerge {
+                        feMergeNode {
+                            this["in"] = "offsetBlur"
+                        }
+                        feMergeNode {
+                            this["in"] = "SourceGraphic"
+                        }
+                    }
+                    feTile {
+                        this["in"] = "texture"
+                    }
+                }
+                symbol(id = "tree") {
+                    it["viewBox"] = "0 0 40 80"
+                    polyline {
+                        it["points"] = "20,80 20,30 10,30 20,5 30,30 20,30"
+                        it["fill"] = "none"
+                        it["stroke"] = "#228B22"
+                        it["stroke-width"] = "2"
+                    }
+                }
+            }
+            g("scene") {
+                it["clip-path"] = "url(#sceneClip)"
+                rect("sky") {
+                    it["width"] = "800"
+                    it["height"] = "400"
+                    it["fill"] = "url(#skyGradient)"
+                }
+                circle {
+                    it["cx"] = "650"
+                    it["cy"] = "100"
+                    it["r"] = "50"
+                    it["fill"] = "url(#sunGlow)"
+                    animate {
+                        this["attributeName"] = "r"
+                        this["values"] = "48;52;48"
+                        this["dur"] = "3s"
+                        this["repeatCount"] = "indefinite"
+                    }
+                }
+                path {
+                    it["d"] = "M 0 350 Q 200 250 400 300 T 800 280 L 800 600 L 0 600 Z"
+                    it["fill"] = "url(#grass)"
+                }
+                line {
+                    it["x1"] = "0"
+                    it["y1"] = "400"
+                    it["x2"] = "800"
+                    it["y2"] = "400"
+                    it["stroke"] = "#333"
+                    it["stroke-width"] = "1"
+                }
+                polygon {
+                    it["points"] = "300,400 400,200 500,400"
+                    it["fill"] = "#8B7355"
+                }
+                polyline {
+                    it["points"] = "0,380 200,360 400,350 600,340 800,350"
+                    it["fill"] = "none"
+                    it["stroke"] = "#333"
+                    it["stroke-width"] = "2"
+                    it["marker-end"] = "url(#arrowhead)"
+                }
+                ellipse {
+                    it["cx"] = "400"
+                    it["cy"] = "420"
+                    it["rx"] = "200"
+                    it["ry"] = "20"
+                    it["fill"] = "rgba(0,0,0,0.1)"
+                }
+                image {
+                    this["href"] = "cloud.png"
+                    this["x"] = "100"
+                    this["y"] = "50"
+                    this["width"] = "120"
+                    this["height"] = "60"
+                }
+                use {
+                    this["href"] = "#tree"
+                    this["x"] = "150"
+                    this["y"] = "300"
+                    this["width"] = "40"
+                    this["height"] = "80"
+                }
+                a(href = "https://xemantic.com", target = "_blank") {
+                    text {
+                        it["x"] = "400"
+                        it["y"] = "560"
+                        it["text-anchor"] = "middle"
+                        it["font-family"] = "sans-serif"
+                        it["font-size"] = "16"
+                        tspan {
+                            it["font-weight"] = "bold"
+                            +"Landscape "
+                        }
+                        tspan {
+                            it["fill"] = "#666"
+                            +"Illustration"
                         }
                     }
                 }
-                animateMotion {
-                    this["dur"] = "5s"
-                    this["repeatCount"] = "indefinite"
-                    this["path"] = "M 0 0 L 100 0"
+                text("path-label") {
+                    textPath {
+                        it["href"] = "#curvePath"
+                        +"Text along a curved path"
+                    }
                 }
-                animateTransform {
-                    this["attributeName"] = "transform"
-                    this["type"] = "rotate"
-                    this["from"] = "0 400 300"
-                    this["to"] = "360 400 300"
-                    this["dur"] = "60s"
-                    this["repeatCount"] = "indefinite"
+                foreignObject {
+                    it["x"] = "620"
+                    it["y"] = "460"
+                    it["width"] = "160"
+                    it["height"] = "80"
                 }
-                set {
-                    this["attributeName"] = "visibility"
-                    this["to"] = "visible"
-                    this["begin"] = "2s"
+                switch {
+                    g {
+                        it["requiredFeatures"] = "http://www.w3.org/TR/SVG11/feature#Shape"
+                        rect {
+                            it["x"] = "10"
+                            it["y"] = "10"
+                            it["width"] = "100"
+                            it["height"] = "40"
+                            it["fill"] = "#eee"
+                        }
+                    }
                 }
+            }
+            animateMotion {
+                this["dur"] = "5s"
+                this["repeatCount"] = "indefinite"
+                this["path"] = "M 0 0 L 100 0"
+            }
+            animateTransform {
+                this["attributeName"] = "transform"
+                this["type"] = "rotate"
+                this["from"] = "0 400 300"
+                this["to"] = "360 400 300"
+                this["dur"] = "60s"
+                this["repeatCount"] = "indefinite"
+            }
+            set {
+                this["attributeName"] = "visibility"
+                this["to"] = "visible"
+                this["begin"] = "2s"
             }
         }
 
@@ -456,7 +445,7 @@ class SvgElementsTest {
                 <ellipse cx="400" cy="420" rx="200" ry="20" fill="rgba(0,0,0,0.1)"/>
                 <image href="cloud.png" x="100" y="50" width="120" height="60"/>
                 <use href="#tree" x="150" y="300" width="40" height="80"/>
-                <a href="https://xemantic.com">
+                <a href="https://xemantic.com" target="_blank">
                   <text x="400" y="560" text-anchor="middle" font-family="sans-serif" font-size="16">
                     <tspan font-weight="bold">Landscape </tspan><tspan fill="#666">Illustration</tspan>
                   </text>
